@@ -17,6 +17,15 @@ public class ArvoreAvl {
         this.listaNosPercorridosBusca = new ArrayList();
     }
 
+    /**
+     * Retorna a lista de nós percorridos durante a busca
+     *
+     * @return {@code List<No>}
+     */
+    public List<No> getListaNosPercorridosBusca() {
+        return listaNosPercorridosBusca;
+    }
+
     //verifica altura da arvore, necessario para o balanceamento
     private int altura(No raiz) {
         if (raiz == null) {
@@ -46,7 +55,7 @@ public class ArvoreAvl {
 
     /**
      * Busca um nó na árvore
-     * 
+     *
      * @param valor Valor do nó
      * @return No
      */
