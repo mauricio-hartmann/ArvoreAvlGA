@@ -1,68 +1,79 @@
 package br.com.unisinos.arvoreavl.arvore;
 
 /**
- *
- * @author Marcelo & Mauricio
+ * Nó de uma árvore
  */
 public class No {
 
+    /** Valor */
     private int valor;
-    private No noEsquerda;
-    private No noDireita;
+    /** Nó pai */
     private No noPai;
-    private int balanceamento;
+    /** Nó filho à esquerda */
+    private No noEsquerda;
+    /** Nó filho à direita */
+    private No noDireita;
+    /** Fator de balanceamento */
+    private int fatorBalanceamento;
 
-    //construtores
+    /**
+     * Método construtor
+     * 
+     * @param valor Valor do nó
+     */
     public No(int valor) {
-        this.noDireita = null;
-        this.noEsquerda = null;
-        this.noPai = null;
-        this.balanceamento = 0;
         this.valor = valor;
+        this.noPai = this.noEsquerda = this.noDireita = null;
+        this.fatorBalanceamento = 0;
     }
 
     public int getValor() {
         return valor;
     }
 
+    public void setValor(int valor) {
+        this.valor = valor;
+    }
+
+    public No getNoPai() {
+        return noPai;
+    }
+
+    public void setNoPai(No noPai) {
+        this.noPai = noPai;
+    }
+
     public No getNoEsquerda() {
         return noEsquerda;
+    }
+
+    public void setNoEsquerda(No noEsquerda) {
+        this.noEsquerda = noEsquerda;
     }
 
     public No getNoDireita() {
         return noDireita;
     }
-    
-    public No getNoPai() {
-        return noPai;
-    }
-    
-    public int getBalanceamento() {
-        return balanceamento;
-    }
-    
-    public void setValor(Integer valor) {
-        this.valor = valor;
-    }
-    
-    public void setNoEsquerda(No noEsquerda) {
-        this.noEsquerda = noEsquerda;
-    }
 
     public void setNoDireita(No noDireita) {
         this.noDireita = noDireita;
     }
-    
-    public void setNoPai(No noPai){
-        this.noPai = noPai;
+
+    public int getFatorBalanceamento() {
+        return fatorBalanceamento;
     }
-    
-    public void setBalanceamento(int balanceamento){
-        this.balanceamento = balanceamento;
+
+    public void setFatorBalanceamento(int fatorBalanceamento) {
+        this.fatorBalanceamento = fatorBalanceamento;
     }
-    
-//    @Override
-//    public String toString() {
-//        return "No [valor=" + valor + "]";
-//    }    
+
+    /**
+     * Retorna o nó em formato String
+     * 
+     * @return String
+     */
+    @Override
+    public String toString() {
+        return String.valueOf(valor);
+    }
 }

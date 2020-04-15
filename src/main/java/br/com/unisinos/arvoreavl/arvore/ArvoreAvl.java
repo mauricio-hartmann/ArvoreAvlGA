@@ -28,7 +28,7 @@ public class ArvoreAvl {
 
     //balanco de ArvoreAVL = altura(arvore a esq) - altura(arvore a dir)
     private void setBalanceamento(No no) {
-        no.setBalanceamento(altura(no.getNoDireita()) - altura(no.getNoEsquerda()));
+        no.setFatorBalanceamento(altura(no.getNoDireita()) - altura(no.getNoEsquerda()));
     }
 
     //Parte de inserir
