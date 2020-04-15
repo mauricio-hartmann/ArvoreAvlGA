@@ -5,7 +5,7 @@ import java.util.List;
 
 public class ArvoreAvl {
 
-    /** Nós raíz da árvore */
+    /** Nó raíz da árvore */
     private No raiz;
     /** Lista de nós percorridos durante a busca de um nó */
     private final List<No> listaNosPercorridosBusca;
@@ -31,7 +31,6 @@ public class ArvoreAvl {
         if (raiz == null) {
             return -1;
         }
-
         if (raiz.getNoEsquerda() == null && raiz.getNoDireita() == null) {
             return 0;
 
@@ -75,46 +74,82 @@ public class ArvoreAvl {
         return noAtual;
     }
 
-    //Parte de inserir
+    /**
+     * Insere um nó na árvore
+     *
+     * @param valor Valor do nó
+     */
     public void inserir(int valor) {
+        // Se já existe um nó com esse valor
         if (busca(valor) != null) {
             return;
         }
         inserir(this.raiz, valor);
     }
 
-    public void inserir(No no, int valor) {
-        //Se for o primeiro vai criar uma raiz.
+    /**
+     * Insere um novo nó na árvore
+     *
+     * @param noComparacao Nó para comparação de valor
+     * @param valor Valor do nó
+     */
+    private void inserir(No noComparacao, int valor) {
+        //Se for o primeiro vai criar uma raiz
         if (this.raiz == null) {
             this.raiz = new No(valor);
         } else {
-            if (valor < no.getValor()) {
-                inserirNoAEsquerda(no, valor);
+            // Se o valor for menor que o valor do nó de comparação
+            if (valor < noComparacao.getValor()) {
+                inserirNoAEsquerda(noComparacao, valor);
             } else {
-                inserirNoADireita(no, valor);
+                inserirNoADireita(noComparacao, valor);
             }
         }
     }
-    //Fim parte inserir
 
-    private void inserirNoAEsquerda(No no, int valor) {
-        //Se tiver elemento no no esquedo, entra nesse nó para continuar a inserção
-        if (no.getNoEsquerda() != null) {
-            inserir(no.getNoEsquerda(), valor);
+    /**
+     * Insere um novo nó à esquerda do nó de comparação
+     *
+     * @param noComparacao Nó de comparação
+     * @param valor Valor
+     */
+    private void inserirNoAEsquerda(No noComparacao, int valor) {
+        //Se tiver elemento no nó esquerdo, entra nesse nó para continuar a inserção
+        if (noComparacao.getNoEsquerda() != null) {
+            inserir(noComparacao.getNoEsquerda(), valor);
         } else {
-            //Se nó esquerdo estiver vazio, insere o novo no aqui 
-            no.setNoEsquerda(new No(valor));
+            //Se nó esquerdo estiver vazio, insere o novo nó
+            noComparacao.setNoEsquerda(criaNovoNo(noComparacao, valor));
         }
     }
 
-    private void inserirNoADireita(No no, int valor) {
-        //Se tiver elemento no no direito, entra nesse nó para continuar a inserção
-        if (no.getNoDireita() != null) {
-            inserir(no.getNoDireita(), valor);
+    /**
+     * Insere um novo nó à direita do nó de comparação
+     *
+     * @param noComparacao Nó de comparação
+     * @param valor Valor
+     */
+    private void inserirNoADireita(No noComparacao, int valor) {
+        //Se tiver elemento no nó direito, entra nesse nó para continuar a inserção
+        if (noComparacao.getNoDireita() != null) {
+            inserir(noComparacao.getNoDireita(), valor);
         } else {
-            //Se nodo direito vazio insere o novo no aqui 
-            no.setNoDireita(new No(valor));
+            //Se nodo direito vazio insere o novo nó
+            noComparacao.setNoDireita(criaNovoNo(noComparacao, valor));
         }
+    }
+
+    /**
+     * Cria um novo nó
+     * 
+     * @param noPai Nó pai
+     * @param valor Valor do nó
+     * @return No
+     */
+    private No criaNovoNo(No noPai, int valor) {
+        No no = new No(valor);
+        no.setNoPai(noPai);
+        return no;
     }
 
 }
