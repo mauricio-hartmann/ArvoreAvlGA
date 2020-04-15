@@ -3,7 +3,10 @@ package br.com.unisinos.arvoreavl.arvore;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArvoreAvl {
+/**
+ * Classe que representa uma árvore AVL e suas operações
+ */
+public class ArvoreAvl implements ArvoreAvlConstantes {
 
     /** Nó raíz da árvore */
     private No raiz;
@@ -24,32 +27,6 @@ public class ArvoreAvl {
      */
     public List<No> getListaNosPercorridosBusca() {
         return listaNosPercorridosBusca;
-    }
-
-    //verifica altura da arvore, necessario para o balanceamento
-    private int altura(No raiz) {
-        if (raiz == null) {
-            return -1;
-        }
-        if (raiz.getNoEsquerda() == null && raiz.getNoDireita() == null) {
-            return 0;
-
-        } else if (raiz.getNoEsquerda() == null) {
-            return 1 + altura(raiz.getNoDireita());
-
-        } else if (raiz.getNoDireita() == null) {
-            return 1 + altura(raiz.getNoEsquerda());
-
-        } else {
-            //retorna 1 + o maior numero da comparação.
-            return 1 + Math.max(altura(raiz.getNoEsquerda()), altura(raiz.getNoDireita()));
-        }
-    }
-    //fim altura
-
-    //balanco de ArvoreAVL = altura(arvore a esq) - altura(arvore a dir)
-    private void setBalanceamento(No no) {
-        no.setFatorBalanceamento(altura(no.getNoDireita()) - altura(no.getNoEsquerda()));
     }
 
     /**
@@ -104,6 +81,7 @@ public class ArvoreAvl {
             } else {
                 inserirNoADireita(noComparacao, valor);
             }
+            verificaFatorBalanceamento(noComparacao);
         }
     }
 
@@ -141,7 +119,7 @@ public class ArvoreAvl {
 
     /**
      * Cria um novo nó
-     * 
+     *
      * @param noPai Nó pai
      * @param valor Valor do nó
      * @return No
@@ -150,6 +128,73 @@ public class ArvoreAvl {
         No no = new No(valor);
         no.setNoPai(noPai);
         return no;
+    }
+
+    /**
+     * Verifica o fator de balancemanto de um nó
+     *
+     * @param no Nó a verificar
+     */
+    private void verificaFatorBalanceamento(No no) {
+        // Define o fator de balanceamento do nó
+        setBalanceamentoNo(no);
+        int balanceamento = no.getFatorBalanceamento();
+        // Recupera os nós filhos da esquerda e direita
+        No noEsquerda = no.getNoEsquerda();
+        No noDireita = no.getNoDireita();
+        if (balanceamento == BALACEAMENTO_MINUS_DOIS) {
+            if (getAlturaNo(noEsquerda.getNoEsquerda()) >= getAlturaNo(noEsquerda.getNoDireita())) {
+//                no = rotacaoDireita(no);
+            } else {
+//                no = duplaRotacaoEsquerdaDireita(no);
+            }
+        } else if (balanceamento == BALACEAMENTO_DOIS) {
+            if (getAlturaNo(noDireita.getNoDireita()) >= getAlturaNo(noDireita.getNoEsquerda())) {
+//                no = rotacaoEsquerda(no);
+            } else {
+//                no = duplaRotacaoDireitaEsquerda(no);
+            }
+        }
+        if (no.getNoPai() != null) {
+            verificaFatorBalanceamento(no.getNoPai());
+        } else {
+            raiz = no;
+        }
+    }
+
+    /**
+     * Define o fator de balanceamento de um nó
+     *
+     * @param no Nó
+     */
+    private void setBalanceamentoNo(No no) {
+        no.setFatorBalanceamento(getAlturaNo(no.getNoDireita()) - getAlturaNo(no.getNoEsquerda()));
+    }
+
+    /**
+     * Retorna a altura de um nó
+     *
+     * @param no Nó
+     * @return int
+     */
+    private int getAlturaNo(No no) {
+        // Se o nó estiver vazio (árvore vazia)
+        if (no == null) {
+            return ALTURA_ARVORE_VAZIA;
+        } else if (no.getNoEsquerda() == null && no.getNoDireita() == null) {
+            // Se o nó não possui filhos
+            return ALTURA_NO_SEM_FILHOS;
+        } else if (no.getNoEsquerda() == null) {
+            // Se não possui nó à esquerda, retorna a altura do nó à direita
+            return ALTURA_BASE + getAlturaNo(no.getNoDireita());
+        } else if (no.getNoDireita() == null) {
+            // Se não possui nó à direita, retorna a altura do nó à esquerda
+            return ALTURA_BASE + getAlturaNo(no.getNoEsquerda());
+        } else {
+            //retorna 1 + o maior número da comparação entre a altura da esquerda e direita.
+            return ALTURA_BASE + Math.max(getAlturaNo(no.getNoEsquerda()),
+                    getAlturaNo(no.getNoDireita()));
+        }
     }
 
 }
