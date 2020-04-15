@@ -1,8 +1,21 @@
 package br.com.unisinos.arvoreavl.arvore;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ArvoreAvl {
 
+    /** Nós raíz da árvore */
     private No raiz;
+    /** Lista de nós percorridos durante a busca de um nó */
+    private final List<No> listaNosPercorridosBusca;
+
+    /**
+     * Método construtor
+     */
+    public ArvoreAvl() {
+        this.listaNosPercorridosBusca = new ArrayList();
+    }
 
     //verifica altura da arvore, necessario para o balanceamento
     private int altura(No raiz) {
@@ -31,8 +44,33 @@ public class ArvoreAvl {
         no.setFatorBalanceamento(altura(no.getNoDireita()) - altura(no.getNoEsquerda()));
     }
 
+    /**
+     * Busca um nó na árvore
+     * 
+     * @param valor Valor do nó
+     * @return No
+     */
+    public No busca(int valor) {
+        // Percorre os nós da árvore, começando pela raíz
+        No noAtual = raiz;
+        while (noAtual != null) {
+            listaNosPercorridosBusca.add(noAtual);
+            // Se o valor do nó pesquisado for igual ao valor procurado
+            if (noAtual.getValor() == valor) {
+                break;
+            }
+            // Define o próximo nó da pesquisa de acordo com o valor
+            noAtual = noAtual.getValor() < valor ? noAtual.getNoDireita()
+                    : noAtual.getNoEsquerda();
+        }
+        return noAtual;
+    }
+
     //Parte de inserir
     public void inserir(int valor) {
+        if (busca(valor) != null) {
+            return;
+        }
         inserir(this.raiz, valor);
     }
 
