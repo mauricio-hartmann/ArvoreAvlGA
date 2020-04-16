@@ -7,14 +7,14 @@ public class NoUtils {
 
     /** Altura de uma árvore vazia */
     private static final int ALTURA_ARVORE_VAZIA = -1;
-    /**  Altura de um nó que não possui nós filhos */
+    /** Altura de um nó que não possui nós filhos */
     private static final int ALTURA_NO_SEM_FILHOS = 0;
     /** Altura base de um nó com filhos */
     private static final int ALTURA_BASE = 1;
 
     /**
      * Retorna a altura de um nó
-     * 
+     *
      * @param no Nó
      * @return int
      */
@@ -47,7 +47,7 @@ public class NoUtils {
     public static int getFatorbalanceamento(No no) {
         return getAlturaNo(no.getNoDireita()) - getAlturaNo(no.getNoEsquerda());
     }
-    
+
     /**
      * Realiza a rotação simples a esquerda
      *
@@ -112,7 +112,7 @@ public class NoUtils {
 
     /**
      * Realiza a rotação dupla a esquerda
-     * 
+     *
      * @param noRotacionado Nó
      * @return Nó
      */
@@ -123,7 +123,7 @@ public class NoUtils {
 
     /**
      * Realiza a rotação dupla a direita
-     * 
+     *
      * @param noRotacionado Nó
      * @return No
      */

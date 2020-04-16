@@ -6,7 +6,12 @@ import java.util.List;
 /**
  * Classe que representa uma árvore AVL e suas operações
  */
-public class ArvoreAvl implements ArvoreAvlConstantes {
+public class ArvoreAvl {
+
+    /** Valor de balanceamento -2 */
+    private static final int BALACEAMENTO_MINUS_DOIS = -2;
+    /** Valor de balanceamento 2 */
+    private static final int BALACEAMENTO_DOIS = 2;
 
     /** Nó raíz da árvore */
     private No raiz;
@@ -177,6 +182,86 @@ public class ArvoreAvl implements ArvoreAvlConstantes {
             raiz = no;
         }
         no.setAltura(NoUtils.getAlturaNo(no));
+    }
+
+    /**
+     * Remove um nó da árvore
+     *
+     * @param valor Valor do nó
+     * @return No
+     */
+    public No excluir(int valor) {
+        return excluir(raiz, valor);
+    }
+
+    private No excluir(No no, int valor) {
+        No noExcluido = null;
+        // Se o nó não existe, retorna null
+        if (no == null) {
+            return noExcluido;
+        }
+        // Entra no nó especifico de acordo com o valor
+        if (no.getValor() > valor) {
+            noExcluido = excluir(no.getNoEsquerda(), valor);
+        } else if (no.getValor() < valor) {
+            noExcluido = excluir(no.getNoDireita(), valor);
+        } else if (no.getValor() == valor) {
+            // Se o nó não possui filhos a esquerda ou a direita, significando que possui apenas 1 filho
+            if (!no.isPossuiFilhoEsquerda() || !no.isPossuiFilhoDireita()) {
+                noExcluido = no;
+                // Se o nó não possui nó pai, é a raiz. Apaga a raiz
+                if (no.getNoPai() == null) {
+                    this.raiz = null;
+                    return noExcluido;
+                }
+            } else {
+                noExcluido = getNoSubstituto(no);
+            }
+            No noTemp = noExcluido.isPossuiFilhoEsquerda() ? noExcluido.getNoEsquerda()
+                    : noExcluido.getNoDireita();
+            // Se possui um nó temporário para troca de dados
+            if (noTemp != null) {
+                noTemp.setNoPai(noExcluido.getNoPai());
+            }
+            // Se o nó a ser excluído possui nó pai
+            if (noExcluido.getNoPai() == null) {
+                this.raiz = noTemp;
+            } else {
+                if (noExcluido == noExcluido.getNoPai().getNoEsquerda()) {
+                    noExcluido.getNoPai().setNoEsquerda(noTemp);
+                } else {
+                    noExcluido.getNoPai().setNoDireita(noTemp);
+                }
+                ajustaBalanceamento(noExcluido.getNoPai());
+            }
+        }
+        return noExcluido;
+    }
+
+    /**
+     * Recupera o nó que irá substituir o nó excluído
+     * 
+     * @param no Nó
+     * @return No
+     */
+    public No getNoSubstituto(No no) {
+        // Se o nó possui filho a direita
+        if (no.isPossuiFilhoDireita()) {
+            // Vai para o nó direito então tenta recuperar o nó mais a esquerda desse nó
+            No noTemp = no.getNoDireita();
+            while (noTemp.isPossuiFilhoEsquerda()) {
+                noTemp = noTemp.getNoEsquerda();
+            }
+            return noTemp;
+        } else {
+            // Retorna o nó pai
+            No noPai = no.getNoPai();
+            while (noPai != null && no == noPai.getNoDireita()) {
+                no = noPai;
+                noPai = no.getNoPai();
+            }
+            return noPai;
+        }
     }
 
 }
