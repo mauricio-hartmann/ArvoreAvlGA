@@ -13,8 +13,8 @@ public class No {
     private No noEsquerda;
     /** Nó filho à direita */
     private No noDireita;
-    /** Fator de balanceamento */
-    private int fatorBalanceamento;
+    /** Altura do nó */
+    private int altura;
 
     /**
      * Método construtor
@@ -24,7 +24,7 @@ public class No {
     public No(int valor) {
         this.valor = valor;
         this.noPai = this.noEsquerda = this.noDireita = null;
-        this.fatorBalanceamento = 0;
+        this.altura = 0;
     }
 
     public int getValor() {
@@ -59,12 +59,43 @@ public class No {
         this.noDireita = noDireita;
     }
 
-    public int getFatorBalanceamento() {
-        return fatorBalanceamento;
+    public int getAltura() {
+        return altura;
     }
 
-    public void setFatorBalanceamento(int fatorBalanceamento) {
-        this.fatorBalanceamento = fatorBalanceamento;
+    public void setAltura(int altura) {
+        this.altura = altura;
+    }
+    
+    public void calculaAltura() {
+        
+    }
+    
+    /**
+     * Retorna se o nó possui filhos
+     * 
+     * @return Boolean
+     */
+    public boolean isPossuiFilhos() {
+        return noEsquerda != null || noDireita != null;
+    }
+    
+    /**
+     * Retorna se o nó possui filho a esquerda
+     * 
+     * @return Boolean
+     */
+    public boolean isPossuiFilhoEsquerda() {
+        return noEsquerda != null;
+    }
+    
+    /**
+     * Retorna se o nó possui filho a direita
+     * 
+     * @return Boolean
+     */
+    public boolean isPossuiFilhoDireita() {
+        return noDireita != null;
     }
 
     /**

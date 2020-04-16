@@ -30,12 +30,23 @@ public class ArvoreAvl implements ArvoreAvlConstantes {
     }
 
     /**
+     * Retorna se a árvore está vazia
+     *
+     * @return Boolean
+     */
+    public boolean isArvoreVazia() {
+        return raiz == null;
+    }
+
+    /**
      * Busca um nó na árvore
      *
      * @param valor Valor do nó
      * @return No
      */
     public No busca(int valor) {
+        // Limpa a lista de nós percorridos
+        listaNosPercorridosBusca.clear();
         // Percorre os nós da árvore, começando pela raíz
         No noAtual = raiz;
         while (noAtual != null) {
@@ -72,7 +83,7 @@ public class ArvoreAvl implements ArvoreAvlConstantes {
      */
     private void inserir(No noComparacao, int valor) {
         //Se for o primeiro vai criar uma raiz
-        if (this.raiz == null) {
+        if (isArvoreVazia()) {
             this.raiz = new No(valor);
         } else {
             // Se o valor for menor que o valor do nó de comparação
@@ -81,7 +92,7 @@ public class ArvoreAvl implements ArvoreAvlConstantes {
             } else {
                 inserirNoADireita(noComparacao, valor);
             }
-            verificaFatorBalanceamento(noComparacao);
+            ajustaBalanceamento(noComparacao);
         }
     }
 
@@ -93,7 +104,7 @@ public class ArvoreAvl implements ArvoreAvlConstantes {
      */
     private void inserirNoAEsquerda(No noComparacao, int valor) {
         //Se tiver elemento no nó esquerdo, entra nesse nó para continuar a inserção
-        if (noComparacao.getNoEsquerda() != null) {
+        if (noComparacao.isPossuiFilhoEsquerda()) {
             inserir(noComparacao.getNoEsquerda(), valor);
         } else {
             //Se nó esquerdo estiver vazio, insere o novo nó
@@ -109,7 +120,7 @@ public class ArvoreAvl implements ArvoreAvlConstantes {
      */
     private void inserirNoADireita(No noComparacao, int valor) {
         //Se tiver elemento no nó direito, entra nesse nó para continuar a inserção
-        if (noComparacao.getNoDireita() != null) {
+        if (noComparacao.isPossuiFilhoDireita()) {
             inserir(noComparacao.getNoDireita(), valor);
         } else {
             //Se nodo direito vazio insere o novo nó
@@ -131,70 +142,41 @@ public class ArvoreAvl implements ArvoreAvlConstantes {
     }
 
     /**
-     * Verifica o fator de balancemanto de um nó
+     * Ajusta o balanceamento da árvore recursivamente até a raíz
      *
-     * @param no Nó a verificar
+     * @param no Nó a ser ajustado
      */
-    private void verificaFatorBalanceamento(No no) {
+    private void ajustaBalanceamento(No no) {
         // Define o fator de balanceamento do nó
-        setBalanceamentoNo(no);
-        int balanceamento = no.getFatorBalanceamento();
+        int fatorBalanceamento = NoUtils.getFatorbalanceamento(no);
         // Recupera os nós filhos da esquerda e direita
         No noEsquerda = no.getNoEsquerda();
         No noDireita = no.getNoDireita();
-        if (balanceamento == BALACEAMENTO_MINUS_DOIS) {
-            if (getAlturaNo(noEsquerda.getNoEsquerda()) >= getAlturaNo(noEsquerda.getNoDireita())) {
-//                no = rotacaoDireita(no);
+        // Verificar o fator de balanceamento e realiza as rotações
+        if (fatorBalanceamento == BALACEAMENTO_MINUS_DOIS) {
+            // Se a altura da esquerda foi maior ou igual a altura da direita
+            if (NoUtils.getAlturaNo(noEsquerda.getNoEsquerda())
+                    >= NoUtils.getAlturaNo(noEsquerda.getNoDireita())) {
+                no = NoUtils.rotacaoSimplesDireita(no);
             } else {
-//                no = duplaRotacaoEsquerdaDireita(no);
+                no = NoUtils.rotacaoDuplaEsquerda(no);
             }
-        } else if (balanceamento == BALACEAMENTO_DOIS) {
-            if (getAlturaNo(noDireita.getNoDireita()) >= getAlturaNo(noDireita.getNoEsquerda())) {
-//                no = rotacaoEsquerda(no);
+        } else if (fatorBalanceamento == BALACEAMENTO_DOIS) {
+            // Se a altura da direita for maior ou igual a altura da esquerda
+            if (NoUtils.getAlturaNo(noDireita.getNoDireita())
+                    >= NoUtils.getAlturaNo(noDireita.getNoEsquerda())) {
+                no = NoUtils.rotacaoSimplesEsquerda(no);
             } else {
-//                no = duplaRotacaoDireitaEsquerda(no);
+                no = NoUtils.rotacaoDuplaDireita(no);
             }
         }
+        // Se possui um nó pai, ajusta o balanceamento do nó pai recursivamente até a raíz
         if (no.getNoPai() != null) {
-            verificaFatorBalanceamento(no.getNoPai());
+            ajustaBalanceamento(no.getNoPai());
         } else {
             raiz = no;
         }
-    }
-
-    /**
-     * Define o fator de balanceamento de um nó
-     *
-     * @param no Nó
-     */
-    private void setBalanceamentoNo(No no) {
-        no.setFatorBalanceamento(getAlturaNo(no.getNoDireita()) - getAlturaNo(no.getNoEsquerda()));
-    }
-
-    /**
-     * Retorna a altura de um nó
-     *
-     * @param no Nó
-     * @return int
-     */
-    private int getAlturaNo(No no) {
-        // Se o nó estiver vazio (árvore vazia)
-        if (no == null) {
-            return ALTURA_ARVORE_VAZIA;
-        } else if (no.getNoEsquerda() == null && no.getNoDireita() == null) {
-            // Se o nó não possui filhos
-            return ALTURA_NO_SEM_FILHOS;
-        } else if (no.getNoEsquerda() == null) {
-            // Se não possui nó à esquerda, retorna a altura do nó à direita
-            return ALTURA_BASE + getAlturaNo(no.getNoDireita());
-        } else if (no.getNoDireita() == null) {
-            // Se não possui nó à direita, retorna a altura do nó à esquerda
-            return ALTURA_BASE + getAlturaNo(no.getNoEsquerda());
-        } else {
-            //retorna 1 + o maior número da comparação entre a altura da esquerda e direita.
-            return ALTURA_BASE + Math.max(getAlturaNo(no.getNoEsquerda()),
-                    getAlturaNo(no.getNoDireita()));
-        }
+        no.setAltura(NoUtils.getAlturaNo(no));
     }
 
 }
