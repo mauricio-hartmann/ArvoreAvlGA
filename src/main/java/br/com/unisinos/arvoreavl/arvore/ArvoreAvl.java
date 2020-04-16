@@ -12,17 +12,22 @@ public class ArvoreAvl {
     private static final int BALACEAMENTO_MINUS_DOIS = -2;
     /** Valor de balanceamento 2 */
     private static final int BALACEAMENTO_DOIS = 2;
+    /** Patter para adicionar valores ao builder de ordem de percurso */
+    private static final String PATTERN_ORDER_STRING = "%s ";
 
     /** Nó raíz da árvore */
     private No raiz;
     /** Lista de nós percorridos durante a busca de um nó */
     private final List<No> listaNosPercorridosBusca;
+    /** Builder responsável por montar a string de ordem de percurso */
+    private final StringBuilder orderBuilder;
 
     /**
      * Método construtor
      */
     public ArvoreAvl() {
         this.listaNosPercorridosBusca = new ArrayList();
+        this.orderBuilder = new StringBuilder();
     }
 
     /**
@@ -240,7 +245,7 @@ public class ArvoreAvl {
 
     /**
      * Recupera o nó que irá substituir o nó excluído
-     * 
+     *
      * @param no Nó
      * @return No
      */
@@ -263,5 +268,93 @@ public class ArvoreAvl {
             return noPai;
         }
     }
+
+    /**
+     * Imprime os nós da árvore em pré-ordem
+     */
+    public void printPreOrdem() {
+        montaStringPreOrdem(raiz);
+        System.out.println(formataStringOrder());
+    }
+
+    /**
+     * Imprime os nós da árvore em pré-ordem
+     *
+     * @param no Nó
+     */
+    private void montaStringPreOrdem(No no) {
+        if (no != null) {
+            addNoToOrderBuilder(no);
+            montaStringPreOrdem(no.getNoEsquerda());
+            montaStringPreOrdem(no.getNoDireita());
+        }
+    }
+
+    /**
+     * Imprime os nós da árvore em ordem
+     */
+    public void printEmOrdem() {
+        montaStringEmOrdem(raiz);
+        System.out.println(formataStringOrder());
+    }
+
+    /**
+     * Imprime os nós da árvore em ordem
+     *
+     * @param no Nó
+     */
+    private void montaStringEmOrdem(No no) {
+        if (no != null) {
+            montaStringEmOrdem(no.getNoEsquerda());
+            addNoToOrderBuilder(no);
+            montaStringEmOrdem(no.getNoDireita());
+        }
+    }
+
+    /**
+     * Imprime os nós da árvore em ordem
+     */
+    public void printPosOrdem() {
+        montaStringPosOrdem(raiz);
+        System.out.println(formataStringOrder());
+    }
+
+    /**
+     * Imprime os nós da árvore em ordem
+     *
+     * @param no Nó
+     */
+    private void montaStringPosOrdem(No no) {
+        if (no != null) {
+            montaStringPosOrdem(no.getNoEsquerda());
+            montaStringPosOrdem(no.getNoDireita());
+            addNoToOrderBuilder(no);
+        }
+    }
+
+    /**
+     * Adiciona um nó ao builder responsável por construir a string de ordem de percurso
+     * 
+     * @param no Nó
+     */
+    private void addNoToOrderBuilder(No no) {
+        orderBuilder.append(String.format(PATTERN_ORDER_STRING, no));
+    }
+    
+    /**
+     * Formata a string de saída das ordens de percurso
+     * 
+     * @return 
+     */
+    private String formataStringOrder() {
+        // Cria uma string removendo os espaços no final e substituindo os espaços
+        // entre os caracteres por ", "
+        String orderResultado = orderBuilder.toString().replaceFirst("\\s++$", "")
+                .replaceAll(" ", ", ");
+        // Limpa o builder
+        orderBuilder.delete(0, orderBuilder.toString().length());
+        return orderResultado;
+    }
+    
 
 }

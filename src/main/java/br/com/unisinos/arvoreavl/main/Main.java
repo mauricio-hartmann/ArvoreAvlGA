@@ -15,12 +15,23 @@ public class Main {
     private static final String OPCAO_MENU_INCLUIR = "i";
     /** Opção do menu - Exclusão */
     private static final String OPCAO_MENU_EXCLUIR = "e";
+    /** Opção do menu - Imprimir em ordem */
+    private static final String OPCAO_MENU_PRINT_ORDEM = "1";
+    /** Opção do menu - Imprimir em pré-ordem */
+    private static final String OPCAO_MENU_PRINT_PRE_ORDEM = "2";
+    /** Opção do menu - Imprimir em pós-ordem */
+    private static final String OPCAO_MENU_PRINT_POS_ORDEM = "3";
     /** Opção do menu - Sair */
     private static final String OPCAO_MENU_SAIR = "s";
 
     /**
+     * Menu impresso na tela
+     */
+    private static String menu;
+
+    /**
      * Método principal
-     * 
+     *
      * @param args Argumentos de execução
      */
     public static void main(String[] args) {
@@ -42,6 +53,30 @@ public class Main {
                 case OPCAO_MENU_EXCLUIR:
                     excluir(arvore);
                     break;
+                case OPCAO_MENU_PRINT_ORDEM:
+                    // Verifica se a árvore está vazia
+                    if (arvore.isArvoreVazia()) {
+                        printArvoreVazia();
+                        break;
+                    }
+                    arvore.printEmOrdem();
+                    break;
+                case OPCAO_MENU_PRINT_PRE_ORDEM:
+                    // Verifica se a árvore está vazia
+                    if (arvore.isArvoreVazia()) {
+                        printArvoreVazia();
+                        break;
+                    }
+                    arvore.printPreOrdem();
+                    break;
+                case OPCAO_MENU_PRINT_POS_ORDEM:
+                    // Verifica se a árvore está vazia
+                    if (arvore.isArvoreVazia()) {
+                        printArvoreVazia();
+                        break;
+                    }
+                    arvore.printPosOrdem();
+                    break;
                 case OPCAO_MENU_SAIR:
                     exibeMenu = false;
                     break;
@@ -52,15 +87,24 @@ public class Main {
         }
     }
 
-    
+    /**
+     * Imprime o menu na tela
+     */
     private static void printMenu() {
-        StringBuilder menuBuilder = new StringBuilder();
-        menuBuilder.append("Selecione uma opção:\n");
-        menuBuilder.append(String.format("%s - Busca:\n", OPCAO_MENU_BUSCA));
-        menuBuilder.append(String.format("%s - Incluir:\n", OPCAO_MENU_INCLUIR));
-        menuBuilder.append(String.format("%s - Excluir:\n", OPCAO_MENU_EXCLUIR));
-        menuBuilder.append(String.format("%s - Sair:\n", OPCAO_MENU_SAIR));
-        System.out.println(menuBuilder.toString());
+        // Cria o menu caso ainda não tenha sido criado
+        if (menu == null) {
+            StringBuilder menuBuilder = new StringBuilder();
+            menuBuilder.append("Selecione uma opção:\n");
+            menuBuilder.append(String.format("%s - Busca:\n", OPCAO_MENU_BUSCA));
+            menuBuilder.append(String.format("%s - Incluir:\n", OPCAO_MENU_INCLUIR));
+            menuBuilder.append(String.format("%s - Excluir:\n", OPCAO_MENU_EXCLUIR));
+            menuBuilder.append(String.format("%s - Imprimir em ordem:\n", OPCAO_MENU_PRINT_ORDEM));
+            menuBuilder.append(String.format("%s - Imprimir pré-ordem:\n", OPCAO_MENU_PRINT_PRE_ORDEM));
+            menuBuilder.append(String.format("%s - Imprimir pós-ordem:\n", OPCAO_MENU_PRINT_POS_ORDEM));
+            menuBuilder.append(String.format("%s - Sair:\n", OPCAO_MENU_SAIR));
+            menu = menuBuilder.toString();
+        }
+        System.out.println(menu);
     }
 
     /**
@@ -71,7 +115,7 @@ public class Main {
     private static void busca(ArvoreAvl arvore) {
         // Exibe aviso caso a árvore esteja vazia
         if (arvore.isArvoreVazia()) {
-            System.out.println("A árvore está vazia!");
+            printArvoreVazia();
             return;
         }
         // busca o nó
@@ -114,7 +158,7 @@ public class Main {
     private static void excluir(ArvoreAvl arvore) {
         // Exibe aviso caso a árvore esteja vazia
         if (arvore.isArvoreVazia()) {
-            System.out.println("A árvore está vazia!");
+            printArvoreVazia();
             return;
         }
         No noRemovido;
@@ -127,6 +171,13 @@ public class Main {
         } else {
             System.out.println("Valor não existe na árvore!");
         }
+    }
+
+    /**
+     * Imprime o aviso de arvore vazia
+     */
+    private static void printArvoreVazia() {
+        System.out.println("A árvore está vazia!");
     }
 
 }
