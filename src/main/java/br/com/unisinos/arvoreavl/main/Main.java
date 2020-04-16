@@ -41,8 +41,7 @@ public class Main {
         // Exibe o menu em loop até que o comando de saída seja recebido
         while (exibeMenu) {
             printMenu();
-            opcaoMenu = scanner.nextLine().toLowerCase();
-            System.out.println();
+            opcaoMenu = scanner.next();
             switch (opcaoMenu) {
                 case OPCAO_MENU_BUSCA:
                     busca(arvore);
@@ -84,6 +83,7 @@ public class Main {
                     System.out.println("Opção inválida!");
                     break;
             }
+            System.out.println();
         }
     }
 
@@ -104,7 +104,7 @@ public class Main {
             menuBuilder.append(String.format("%s - Sair:\n", OPCAO_MENU_SAIR));
             menu = menuBuilder.toString();
         }
-        System.out.println(menu);
+        System.out.print(menu);
     }
 
     /**
