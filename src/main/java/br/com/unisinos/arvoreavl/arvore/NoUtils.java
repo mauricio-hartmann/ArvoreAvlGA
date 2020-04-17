@@ -55,28 +55,16 @@ public class NoUtils {
      * @return No
      */
     public static No rotacaoSimplesEsquerda(No noRotacionado) {
-        // Recupera o nó da direita e o coloca no lugar do nó atual,alterando
-        // a raíz dessa parte da árvore
-        No noDireito = noRotacionado.getNoDireita();
-        noDireito.setNoPai(noRotacionado.getNoPai());
-        // Coloca o nó da esquerda do raíz atual como nó direito do nó rotacionado
-        noRotacionado.setNoDireita(noDireito.getNoEsquerda());
-        // Coloca o nó rotacionado como filho a esquerda da nova raíz
-        noDireito.setNoEsquerda(noRotacionado);
-        noRotacionado.setNoPai(noDireito);
-        // Se a noza raíz possui nó pai
-        if (noDireito.getNoPai() != null) {
-            // Atualiza a vinculação no nó pai
-            if (noDireito.getNoPai().getNoDireita() == noRotacionado) {
-                noDireito.getNoPai().setNoDireita(noDireito);
-            } else if (noDireito.getNoPai().getNoEsquerda() == noRotacionado) {
-                noDireito.getNoPai().setNoEsquerda(noDireito);
-            }
-        }
-        // Atualiza a altura dos nós
+        // Define o no direito como o novo nó pai
+        No novoNoPai = noRotacionado.getNoDireita();
+        // Define os nós direito e esquerdo do novo nó pai
+        No novoNoDireito = novoNoPai.getNoEsquerda();
+        novoNoPai.setNoEsquerda(noRotacionado);
+        noRotacionado.setNoDireita(novoNoDireito);
+        // Ajusta a altura dos nós
         noRotacionado.setAltura(NoUtils.getAlturaNo(noRotacionado));
-        noDireito.setAltura(NoUtils.getAlturaNo(noDireito));
-        return noDireito;
+        novoNoPai.setAltura(NoUtils.getAlturaNo(novoNoPai));
+        return novoNoPai;
     }
 
     /**
@@ -86,28 +74,16 @@ public class NoUtils {
      * @return No
      */
     public static No rotacaoSimplesDireita(No noRotacionado) {
-        // Recupera o nó da esquerda e o coloca no lugar do nó atual,alterando
-        // a raíz dessa parte da árvore
-        No noEsquerdo = noRotacionado.getNoEsquerda();
-        noEsquerdo.setNoPai(noRotacionado.getNoPai());
-        // Coloca o nó da direita do raíz atual como nó esquerdo do nó rotacionado
-        noRotacionado.setNoEsquerda(noEsquerdo.getNoDireita());
-        // Coloca o nó rotacionado como filho a direita da nova raíz
-        noEsquerdo.setNoDireita(noRotacionado);
-        noRotacionado.setNoPai(noEsquerdo);
-        // Se a noza raíz possui nó pai
-        if (noEsquerdo.getNoPai() != null) {
-            // Atualiza a vinculação no nó pai
-            if (noEsquerdo.getNoPai().getNoDireita() == noRotacionado) {
-                noEsquerdo.getNoPai().setNoDireita(noEsquerdo);
-            } else if (noEsquerdo.getNoPai().getNoEsquerda() == noRotacionado) {
-                noEsquerdo.getNoPai().setNoEsquerda(noEsquerdo);
-            }
-        }
-        // Atualiza a altura dos nós
+        // Define o no direito como o novo nó pai
+        No noPai = noRotacionado.getNoEsquerda();
+        // Define os nós direito e esquerdo do novo nó pai
+        No novoNoEsquerdo = noPai.getNoDireita();
+        noPai.setNoDireita(noRotacionado);
+        noRotacionado.setNoEsquerda(novoNoEsquerdo);
+        // Ajusta a altura dos nós
         noRotacionado.setAltura(NoUtils.getAlturaNo(noRotacionado));
-        noEsquerdo.setAltura(NoUtils.getAlturaNo(noEsquerdo));
-        return noEsquerdo;
+        noPai.setAltura(NoUtils.getAlturaNo(noPai));
+        return noPai;
     }
 
     /**
