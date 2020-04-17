@@ -2,6 +2,8 @@ package br.com.unisinos.arvoreavl.arvore;
 
 /**
  * Nó de uma árvore
+ * @author Marcello Augusto Gava 
+ * @author Mauricio Hartmann
  */
 public class No {
 

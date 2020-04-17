@@ -2,6 +2,8 @@ package br.com.unisinos.arvoreavl.arvore;
 
 /**
  * Classe com funções úteis para os nós
+ * @author Marcello Augusto Gava 
+ * @author Mauricio Hartmann
  */
 public class NoUtils {
 

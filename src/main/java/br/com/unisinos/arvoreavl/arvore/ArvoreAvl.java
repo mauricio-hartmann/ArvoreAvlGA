@@ -5,6 +5,8 @@ import java.util.List;
 
 /**
  * Classe que representa uma árvore AVL e suas operações
+ * @author Marcello Augusto Gava 
+ * @author Mauricio Hartmann
  */
 public class ArvoreAvl {
 
