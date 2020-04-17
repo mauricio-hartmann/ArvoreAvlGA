@@ -8,10 +8,6 @@ import java.util.List;
  */
 public class ArvoreAvl {
 
-    /** Valor de balanceamento -2 */
-    private static final int BALACEAMENTO_MINUS_DOIS = -2;
-    /** Valor de balanceamento 2 */
-    private static final int BALACEAMENTO_DOIS = 2;
     /** Patter para adicionar valores ao builder de ordem de percurso */
     private static final String PATTERN_ORDER_STRING = "%s ";
 
@@ -92,101 +88,31 @@ public class ArvoreAvl {
      * @param valor Valor do nó
      */
     private void inserir(No noComparacao, int valor) {
-        //Se for o primeiro vai criar uma raiz
-        if (isArvoreVazia()) {
-            this.raiz = new No(valor);
-        } else {
-            // Se o valor for menor que o valor do nó de comparação
-            if (valor < noComparacao.getValor()) {
-                inserirNoAEsquerda(noComparacao, valor);
+        // Se a raíz não possui valor, insere na raíz
+        if (raiz == null) {
+            raiz = new No(valor, null);
+            return;
+        }
+        // Se o valor for menor que o valor do nó de comparação, vai para esquerda
+        if (valor < noComparacao.getValor()) {
+            // Caso o nó já possua um filho a esquerda, caminha para dentro desse filho
+            if (noComparacao.getNoEsquerda() != null) {
+                inserir(noComparacao.getNoEsquerda(), valor);
             } else {
-                inserirNoADireita(noComparacao, valor);
+                // Insere como filho a esquerda
+                noComparacao.setNoEsquerda(new No(valor, noComparacao));
             }
-            ajustaBalanceamento(noComparacao);
-        }
-    }
-
-    /**
-     * Insere um novo nó à esquerda do nó de comparação
-     *
-     * @param noComparacao Nó de comparação
-     * @param valor Valor
-     */
-    private void inserirNoAEsquerda(No noComparacao, int valor) {
-        //Se tiver elemento no nó esquerdo, entra nesse nó para continuar a inserção
-        if (noComparacao.isPossuiFilhoEsquerda()) {
-            inserir(noComparacao.getNoEsquerda(), valor);
-        } else {
-            //Se nó esquerdo estiver vazio, insere o novo nó
-            noComparacao.setNoEsquerda(criaNovoNo(noComparacao, valor));
-        }
-    }
-
-    /**
-     * Insere um novo nó à direita do nó de comparação
-     *
-     * @param noComparacao Nó de comparação
-     * @param valor Valor
-     */
-    private void inserirNoADireita(No noComparacao, int valor) {
-        //Se tiver elemento no nó direito, entra nesse nó para continuar a inserção
-        if (noComparacao.isPossuiFilhoDireita()) {
-            inserir(noComparacao.getNoDireita(), valor);
-        } else {
-            //Se nodo direito vazio insere o novo nó
-            noComparacao.setNoDireita(criaNovoNo(noComparacao, valor));
-        }
-    }
-
-    /**
-     * Cria um novo nó
-     *
-     * @param noPai Nó pai
-     * @param valor Valor do nó
-     * @return No
-     */
-    private No criaNovoNo(No noPai, int valor) {
-        No no = new No(valor);
-        no.setNoPai(noPai);
-        return no;
-    }
-
-    /**
-     * Ajusta o balanceamento da árvore recursivamente até a raíz
-     *
-     * @param no Nó a ser ajustado
-     */
-    private void ajustaBalanceamento(No no) {
-        // Define o fator de balanceamento do nó
-        int fatorBalanceamento = NoUtils.getFatorbalanceamento(no);
-        // Recupera os nós filhos da esquerda e direita
-        No noEsquerda = no.getNoEsquerda();
-        No noDireita = no.getNoDireita();
-        // Verificar o fator de balanceamento e realiza as rotações
-        if (fatorBalanceamento == BALACEAMENTO_MINUS_DOIS) {
-            // Se a altura da esquerda foi maior ou igual a altura da direita
-            if (NoUtils.getAlturaNo(noEsquerda.getNoEsquerda())
-                    >= NoUtils.getAlturaNo(noEsquerda.getNoDireita())) {
-                no = NoUtils.rotacaoSimplesDireita(no);
+        } else if (valor > noComparacao.getValor()) {
+            // Caso o nó já possua um filho a esquerda, caminha para dentro desse filho
+            if (noComparacao.getNoDireita() != null) {
+                inserir(noComparacao.getNoDireita(), valor);
             } else {
-                no = NoUtils.rotacaoDuplaEsquerda(no);
-            }
-        } else if (fatorBalanceamento == BALACEAMENTO_DOIS) {
-            // Se a altura da direita for maior ou igual a altura da esquerda
-            if (NoUtils.getAlturaNo(noDireita.getNoDireita())
-                    >= NoUtils.getAlturaNo(noDireita.getNoEsquerda())) {
-                no = NoUtils.rotacaoSimplesEsquerda(no);
-            } else {
-                no = NoUtils.rotacaoDuplaDireita(no);
+                noComparacao.setNoDireita(new No(valor, noComparacao));
             }
         }
-        // Se possui um nó pai, ajusta o balanceamento do nó pai recursivamente até a raíz
-        if (no.getNoPai() != null) {
-            ajustaBalanceamento(no.getNoPai());
-        } else {
-            raiz = no;
-        }
-        no.setAltura(NoUtils.getAlturaNo(no));
+        // Ajsuta o balanceamento da árvore e a altura do nó
+        ajustaBalanceamento(noComparacao);
+        noComparacao.setAltura(NoUtils.getAlturaNo(noComparacao));
     }
 
     /**
@@ -196,77 +122,167 @@ public class ArvoreAvl {
      * @return No
      */
     public No excluir(int valor) {
-        return excluir(raiz, valor);
-    }
-
-    private No excluir(No no, int valor) {
-        No noExcluido = null;
-        // Se o nó não existe, retorna null
-        if (no == null) {
-            return noExcluido;
+        // Verifica se o nó existe antes de fazer a exclusão
+        No noExcluir = busca(valor);
+        // Caso o nó não exista retorna null
+        if (noExcluir == null) {
+            return noExcluir;
         }
-        // Entra no nó especifico de acordo com o valor
-        if (no.getValor() > valor) {
-            noExcluido = excluir(no.getNoEsquerda(), valor);
-        } else if (no.getValor() < valor) {
-            noExcluido = excluir(no.getNoDireita(), valor);
-        } else if (no.getValor() == valor) {
-            // Se o nó não possui filhos a esquerda ou a direita, significando que possui apenas 1 filho
-            if (!no.isPossuiFilhoEsquerda() || !no.isPossuiFilhoDireita()) {
-                noExcluido = no;
-                // Se o nó não possui nó pai, é a raiz. Apaga a raiz
-                if (no.getNoPai() == null) {
-                    this.raiz = null;
-                    return noExcluido;
-                }
-            } else {
-                noExcluido = getNoSubstituto(no);
-            }
-            No noTemp = noExcluido.isPossuiFilhoEsquerda() ? noExcluido.getNoEsquerda()
-                    : noExcluido.getNoDireita();
-            // Se possui um nó temporário para troca de dados
-            if (noTemp != null) {
-                noTemp.setNoPai(noExcluido.getNoPai());
-            }
-            // Se o nó a ser excluído possui nó pai
-            if (noExcluido.getNoPai() == null) {
-                this.raiz = noTemp;
-            } else {
-                if (noExcluido == noExcluido.getNoPai().getNoEsquerda()) {
-                    noExcluido.getNoPai().setNoEsquerda(noTemp);
-                } else {
-                    noExcluido.getNoPai().setNoDireita(noTemp);
-                }
-                ajustaBalanceamento(noExcluido.getNoPai());
-            }
-        }
-        return noExcluido;
+        // Exclui o nó, rebalanceia a árvore e retorna o nó
+        noExcluir = excluir(noExcluir);
+        ajustaBalanceamento(noExcluir.getNoPai());
+        return noExcluir;
     }
 
     /**
-     * Recupera o nó que irá substituir o nó excluído
+     * Exclui um nó da árvore
      *
      * @param no Nó
      * @return No
      */
-    public No getNoSubstituto(No no) {
-        // Se o nó possui filho a direita
-        if (no.isPossuiFilhoDireita()) {
-            // Vai para o nó direito então tenta recuperar o nó mais a esquerda desse nó
-            No noTemp = no.getNoDireita();
-            while (noTemp.isPossuiFilhoEsquerda()) {
-                noTemp = noTemp.getNoEsquerda();
+    private No excluir(No no) {
+        // Se o nó é uma folha, remove a vinculação com o nó pai
+        if (no.isFolha()) {
+            // Remove da esquerda ou direita, de acordo com a posição do nó
+            if (no.isFilhoEsquerda()) {
+                no.getNoPai().setNoEsquerda(null);
+            } else {
+                no.getNoPai().setNoDireita(null);
             }
-            return noTemp;
+        } else if (no.getNoEsquerda() == null || no.getNoDireita() == null) {
+            // Caso o nó possua 1 filho a esquerda ou a direita, recupera o filho
+            No noFilhoExcluido = no.isPossuiFilhoDireita() ? no.getNoDireita() : no.getNoEsquerda();
+            // Substitui a posição do nó pelo filho no nó pai
+            if (no.isFilhoEsquerda()) {
+                no.getNoPai().setNoEsquerda(noFilhoExcluido);
+            } else {
+                no.getNoPai().setNoDireita(noFilhoExcluido);
+            }
         } else {
-            // Retorna o nó pai
-            No noPai = no.getNoPai();
-            while (noPai != null && no == noPai.getNoDireita()) {
-                no = noPai;
-                noPai = no.getNoPai();
+            // Recupera o nó esquerdo
+            No noTemp = no.getNoEsquerda();
+            // Desce a árvore sempre pelo lado direito para encontrar o substituto
+            while (noTemp.getNoDireita() != null) {
+                noTemp = noTemp.getNoDireita();
             }
-            return noPai;
+            no.setValor(noTemp.getValor());
+            no = excluir(noTemp);
         }
+        no.getNoPai().setAltura(NoUtils.getAlturaNo(no.getNoPai()));
+        return no;
+    }
+
+    /**
+     * Ajusta o balanceamento da árvore recursivamente
+     *
+     * @param no Nó a ser ajustado
+     */
+    private void ajustaBalanceamento(No no) {
+        // Calcula o fator de balancemento da árvore (-1, 0, 1, ...)
+        int fatorBalanceamento = NoUtils.getFatorbalanceamento(no);
+        No noPai = no.getNoPai();
+        // Se o fator de balanceamento for menor que -1, rotaciona a esquerda
+        if (fatorBalanceamento < -1) {
+            // Realiza rotação simples ou dupla, de acordo com a necessidade
+            if (NoUtils.getAlturaNo(no.getNoEsquerda().getNoEsquerda())
+                    >= NoUtils.getAlturaNo(no.getNoEsquerda().getNoDireita())) {
+                rotacaoSimplesDireita(no);
+            } else {
+                rotacaoDuplaEsquerda(no);
+            }
+        } else if (fatorBalanceamento > 1) {
+            // Realiza rotação simples ou dupla, de acordo com a necessidade
+            if (NoUtils.getAlturaNo(no.getNoDireita().getNoDireita())
+                    >= NoUtils.getAlturaNo(no.getNoDireita().getNoEsquerda())) {
+                rotacaoSimplesEsquerda(no);
+            } else {
+                rotacaoDuplaDireita(no);
+            }
+        }
+        // Se o nó possui pai, faz o rebalanceamento no pai
+        if (noPai != null) {
+            ajustaBalanceamento(noPai);
+        }
+        // Ajusta a altura do nó
+        no.setAltura(NoUtils.getAlturaNo(no));
+    }
+
+    /**
+     * Realiza a rotação simples a direita
+     *
+     * @param noRotacionado Nó pivo da rotação
+     */
+    private void rotacaoSimplesDireita(No noRotacionado) {
+        // Recupera o nó pai, o nó esquerdo e o nó a direita do nó esquerdo
+        No noPai = noRotacionado.getNoPai();
+        No noEsquerdo = noRotacionado.getNoEsquerda();
+        No filhoDireitoDoFilhoEsquerdo = noEsquerdo.getNoDireita();
+        noRotacionado.setNoEsquerda(filhoDireitoDoFilhoEsquerdo);
+        noEsquerdo.setNoDireita(noRotacionado);
+        // Se for a raíz, atualiza a raíz
+        if (noPai == null) {
+            this.raiz = noEsquerdo;
+            noEsquerdo.setNoPai(null);
+            return;
+        }
+        // Substitui o nó esquerdo caso seja o nó rotacionado
+        if (noPai.getNoEsquerda() == noRotacionado) {
+            noPai.setNoEsquerda(noEsquerdo);
+        } else {
+            noPai.setNoDireita(noEsquerdo);
+        }
+        // Ajusta a altura dos nós
+        noRotacionado.setAltura(NoUtils.getAlturaNo(noRotacionado));
+        noEsquerdo.setAltura(NoUtils.getAlturaNo(noEsquerdo));
+    }
+
+    /**
+     * Realiza a rotação simples a direita
+     *
+     * @param noRotacionado Nó pivo da rotação
+     */
+    private void rotacaoSimplesEsquerda(No noRotacionado) {
+        // Recupera o nó pai, o nó direito e o nó a esquerda do nó direito
+        No noPai = noRotacionado.getNoPai();
+        No noDireito = noRotacionado.getNoDireita();
+        No filhoEsquerdoDoFilhoDireito = noDireito.getNoEsquerda();
+        noRotacionado.setNoDireita(filhoEsquerdoDoFilhoDireito);
+        noDireito.setNoEsquerda(noRotacionado);
+        // Se for a raíz, atualiza a raíz
+        if (noPai == null) {
+            this.raiz = noDireito;
+            noDireito.setNoPai(null);
+            return;
+        }
+        // Substitui o nó esquerdo caso seja o nó rotacionado
+        if (noPai.getNoEsquerda() == noRotacionado) {
+            noPai.setNoEsquerda(noDireito);
+        } else {
+            noPai.setNoDireita(noDireito);
+        }
+        // Ajusta a altura dos nós
+        noRotacionado.setAltura(NoUtils.getAlturaNo(noRotacionado));
+        noDireito.setAltura(NoUtils.getAlturaNo(noDireito));
+    }
+
+    /**
+     * Realiza a rotação dupla a esquerda
+     *
+     * @param no Nó
+     */
+    private void rotacaoDuplaEsquerda(No no) {
+        rotacaoSimplesEsquerda(no.getNoEsquerda());
+        rotacaoSimplesDireita(no);
+    }
+
+    /**
+     * Realiza a rotação dupla a direita
+     *
+     * @param no Nó
+     */
+    private void rotacaoDuplaDireita(No no) {
+        rotacaoSimplesDireita(no.getNoDireita());
+        rotacaoSimplesEsquerda(no);
     }
 
     /**
@@ -370,9 +386,9 @@ public class ArvoreAvl {
 
     /**
      * Impríme os níveis da árvore
-     * 
+     *
      * @param no Nó
-     * @param nivel Nível 
+     * @param nivel Nível
      */
     private void printNivel(No no, int nivel) {
         // Se o nó for nulo, interrompe a execução

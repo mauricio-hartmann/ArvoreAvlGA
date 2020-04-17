@@ -18,12 +18,14 @@ public class No {
 
     /**
      * Método construtor
-     * 
+     *
      * @param valor Valor do nó
+     * @param noPai No pai
      */
-    public No(int valor) {
+    public No(int valor, No noPai) {
         this.valor = valor;
-        this.noPai = this.noEsquerda = this.noDireita = null;
+        this.noPai = noPai;
+        this.noEsquerda = this.noDireita = null;
         this.altura = 0;
     }
 
@@ -66,32 +68,32 @@ public class No {
     public void setAltura(int altura) {
         this.altura = altura;
     }
-    
+
     public void calculaAltura() {
-        
+
     }
-    
+
     /**
-     * Retorna se o nó possui filhos
-     * 
+     * Retorna se o nó não possui filhos
+     *
      * @return Boolean
      */
-    public boolean isPossuiFilhos() {
-        return noEsquerda != null || noDireita != null;
+    public boolean isFolha() {
+        return noEsquerda == null && noDireita == null;
     }
-    
+
     /**
      * Retorna se o nó possui filho a esquerda
-     * 
+     *
      * @return Boolean
      */
     public boolean isPossuiFilhoEsquerda() {
         return noEsquerda != null;
     }
-    
+
     /**
      * Retorna se o nó possui filho a direita
-     * 
+     *
      * @return Boolean
      */
     public boolean isPossuiFilhoDireita() {
@@ -99,8 +101,26 @@ public class No {
     }
 
     /**
-     * Retorna o nó em formato String
+     * Retorna se o nó é filho esquerdo
      * 
+     * @return Boolean
+     */
+    public boolean isFilhoEsquerda() {
+        return noPai.isPossuiFilhoEsquerda() && noPai.getNoEsquerda().getValor() == valor;
+    }
+
+    /**
+     * Retorna se o nó é filho direito
+     * 
+     * @return Boolean
+     */
+    public boolean isFilhoDireita() {
+        return noPai.isPossuiFilhoDireita() && noPai.getNoDireita().getValor() == valor;
+    }
+
+    /**
+     * Retorna o nó em formato String
+     *
      * @return String
      */
     @Override
