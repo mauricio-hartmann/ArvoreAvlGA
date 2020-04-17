@@ -4,6 +4,11 @@ import br.com.unisinos.arvoreavl.arvore.ArvoreAvl;
 import br.com.unisinos.arvoreavl.arvore.No;
 import java.util.Scanner;
 
+/**
+ * Classe executável
+ * @author Marcello Augusto Gava 
+ * @author Mauricio Hartmann
+ */
 public class Main {
 
     /** Objeto responsável por ler os inputs de dados */
