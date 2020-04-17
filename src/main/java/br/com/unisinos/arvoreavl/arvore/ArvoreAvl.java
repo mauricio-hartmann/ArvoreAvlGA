@@ -333,18 +333,19 @@ public class ArvoreAvl {
     }
 
     /**
-     * Adiciona um nó ao builder responsável por construir a string de ordem de percurso
-     * 
+     * Adiciona um nó ao builder responsável por construir a string de ordem de
+     * percurso
+     *
      * @param no Nó
      */
     private void addNoToOrderBuilder(No no) {
         orderBuilder.append(String.format(PATTERN_ORDER_STRING, no));
     }
-    
+
     /**
      * Formata a string de saída das ordens de percurso
-     * 
-     * @return 
+     *
+     * @return
      */
     private String formataStringOrder() {
         // Cria uma string removendo os espaços no final e substituindo os espaços
@@ -355,6 +356,36 @@ public class ArvoreAvl {
         orderBuilder.delete(0, orderBuilder.toString().length());
         return orderResultado;
     }
-    
+
+    /**
+     * Imprime a árvore
+     */
+    public void printArvore() {
+        int alturaArvore = NoUtils.getAlturaNo(raiz) + 1;
+        for (int i = 1; i <= alturaArvore; i++) {
+            printNivel(raiz, i);
+            System.out.println();
+        }
+    }
+
+    /**
+     * Impríme os níveis da árvore
+     * 
+     * @param no Nó
+     * @param nivel Nível 
+     */
+    private void printNivel(No no, int nivel) {
+        // Se o nó for nulo, interrompe a execução
+        if (no == null) {
+            return;
+        }
+        // Imprime os níveis da árvore
+        if (nivel == 1) {
+            System.out.print(String.format("|%s| ", no));
+        } else if (nivel > 1) {
+            printNivel(no.getNoEsquerda(), nivel - 1);
+            printNivel(no.getNoDireita(), nivel - 1);
+        }
+    }
 
 }

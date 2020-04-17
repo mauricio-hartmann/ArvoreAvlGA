@@ -15,6 +15,8 @@ public class Main {
     private static final String OPCAO_MENU_INCLUIR = "i";
     /** Opção do menu - Exclusão */
     private static final String OPCAO_MENU_EXCLUIR = "e";
+    /** Opção do menu - Imprimir */
+    private static final String OPCAO_MENU_PRINT_ARVORE = "p";
     /** Opção do menu - Imprimir em ordem */
     private static final String OPCAO_MENU_PRINT_ORDEM = "1";
     /** Opção do menu - Imprimir em pré-ordem */
@@ -51,6 +53,9 @@ public class Main {
                     break;
                 case OPCAO_MENU_EXCLUIR:
                     excluir(arvore);
+                    break;
+                case OPCAO_MENU_PRINT_ARVORE:
+                    arvore.printArvore();
                     break;
                 case OPCAO_MENU_PRINT_ORDEM:
                     // Verifica se a árvore está vazia
@@ -98,6 +103,7 @@ public class Main {
             menuBuilder.append(String.format("%s - Busca:\n", OPCAO_MENU_BUSCA));
             menuBuilder.append(String.format("%s - Incluir:\n", OPCAO_MENU_INCLUIR));
             menuBuilder.append(String.format("%s - Excluir:\n", OPCAO_MENU_EXCLUIR));
+            menuBuilder.append(String.format("%s - Imprimir árvore:\n", OPCAO_MENU_PRINT_ARVORE));
             menuBuilder.append(String.format("%s - Imprimir em ordem:\n", OPCAO_MENU_PRINT_ORDEM));
             menuBuilder.append(String.format("%s - Imprimir pré-ordem:\n", OPCAO_MENU_PRINT_PRE_ORDEM));
             menuBuilder.append(String.format("%s - Imprimir pós-ordem:\n", OPCAO_MENU_PRINT_POS_ORDEM));
@@ -147,6 +153,7 @@ public class Main {
         } else {
             arvore.inserir(valor);
             System.out.println("Valor inserido com sucesso!");
+            arvore.printArvore();
         }
     }
 
@@ -168,6 +175,7 @@ public class Main {
         // Exibe o aviso caso tenha excluído ou não o nó
         if (noRemovido != null) {
             System.out.println("Nó removido com sucesso!");
+            arvore.printArvore();
         } else {
             System.out.println("Valor não existe na árvore!");
         }
